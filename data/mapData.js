@@ -28,6 +28,7 @@ fs.readFile(inputFilePath, (err, data) => {
       rentPerDay: car.rentPerDay,
       description: car.description,
       availableAt: car.availableAt,
+      createdBy: "d60dbee0-df5a-42ca-a410-237ed5fb02b8",
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -2,24 +2,26 @@ const { DB_USERNAME = "postgres", DB_PASSWORD = "54321", DB_HOST = "127.0.0.1", 
 
 module.exports = {
   development: {
+    username: "postgres",
+    password: "DE*e3Fc4ce-eGcG51CedbBE1FD-cAEFF",
+    database: "railway",
+    host: "viaduct.proxy.rlwy.net",
+    port: "23930",
+    dialect: "postgres",
+  },
+  test: {
     username: DB_USERNAME,
     password: DB_PASSWORD,
     database: DB_NAME,
     host: DB_HOST,
     dialect: "postgres",
   },
-  test: {
-    username: "root",
-    password: null,
-    database: "database_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
-  },
   production: {
-    username: "root",
-    password: null,
-    database: "database_production",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    username: "postgres",
+    password: "DE*e3Fc4ce-eGcG51CedbBE1FD-cAEFF",
+    database: "railway",
+    host: "viaduct.proxy.rlwy.net",
+    port: "23930",
+    dialect: "postgres",
   },
 };
