@@ -1,0 +1,31 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "semi": ["error", "always"],
+    "curly": ["warn", "multi"],
+    "no-console": "warn",
+    "no-alert": "warn",
+    "no-unused-expressions": "error",
+    "no-const-assign": "error",
+    "no-empty-function": "warn",
+    "no-empty-pattern": "error",
+    "no-func-assign": "warn",
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "valid-typeof": "warn"
+  }
+}

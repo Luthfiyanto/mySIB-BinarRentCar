@@ -1,0 +1,1338 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Challenge 5 - Cars Express App",
+    "version": "3.0.0",
+    "description": "Aplikasi penyimpanan data mobil dengan menggunakan expressJS dan database PostgreSQL dengan kebutuhan melakukan CRUD mobil serta mengimplementasikan autentikasi dan otorisasi pengguna.\n\nAvailable Users:\n- SuperAdmin\n  - email: superadmin@gmail.com\n  - password: superadmin123\n- Admin\n  - email: admin123@gmail.com\n  - password: admin123\n- Member\n  - email: user@gmail.com (ex.)\n  - password: userpassword (ex.)",
+    "contact": {
+      "email": "luthfiyanto1425@gmail.com"
+    }
+  },
+  "externalDocs": {
+    "description": "Visit our github",
+    "url": "http://github.com/luthfiyanto"
+  },
+  "servers": [
+    {
+      "url": "localhost:8000/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "general",
+      "description": "Handle endpoint without data needed"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user"
+    },
+    {
+      "name": "car",
+      "description": "Find out more about car"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "Home page point",
+        "description": "The default endpoint to return home page",
+        "operationId": "home",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Home"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/*": {
+      "get": {
+        "tags": [
+          "general"
+        ],
+        "summary": "No page is found",
+        "description": "Prevent access the other of existing endpoint",
+        "operationId": "noPage",
+        "responses": {
+          "404": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoContent"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Log user into system",
+        "description": "Login with email and password",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "Input email and password as credential",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credential"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Credential"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Credential"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginSuccess"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Input invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingCredential"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvalidCredential"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user with given input",
+        "description": "Register user as member",
+        "operationId": "createUserAsMember",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InputUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Input invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingCredential"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingCredential"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/admin/register": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create user as admin",
+        "description": "Create user as admin with given input. Token request header is required.",
+        "operationId": "createUserAsAdmin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InputUser"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAdmin"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAdmin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Input invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingCredential"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access Denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/me": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by token credential",
+        "description": "",
+        "operationId": "getUserByToken",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars": {
+      "get": {
+        "tags": [
+          "car"
+        ],
+        "summary": "Get list of cars",
+        "description": "Get list of cars",
+        "operationId": "getListCars",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Car"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Car not found or is empty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "car"
+        ],
+        "summary": "Create  car by Id",
+        "description": "create car by input Id",
+        "operationId": "createCarById",
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Car"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access Denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars/{carId}": {
+      "get": {
+        "tags": [
+          "car"
+        ],
+        "summary": "Get detail car by Id",
+        "description": "Get detail car by input Id",
+        "operationId": "getCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of the car",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailCar"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Car not found or is empty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "car"
+        ],
+        "summary": "Get detail car by Id",
+        "description": "Get detail car by input Id",
+        "operationId": "updateCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of the car",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailCar"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access Denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Car not found or is empty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "car"
+        ],
+        "summary": "Delete car by Id",
+        "description": "Delete car by input Id",
+        "operationId": "deleteCarById",
+        "parameters": [
+          {
+            "name": "carId",
+            "in": "path",
+            "description": "ID of the car",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedCar"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissingAuthorizationHeader"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access Denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessDenied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Car not found or is empty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Home": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Success"
+          },
+          "message": {
+            "type": "string",
+            "example": "ping successfully"
+          }
+        }
+      },
+      "Car": {
+        "type": "object",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "6e2bc663-5197-441a-957b-bc75e4a2da7c"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "example": "small",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "image": {
+            "type": "string",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "integer",
+            "example": 200000
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          }
+        },
+        "xml": {
+          "name": "car"
+        }
+      },
+      "DetailCar": {
+        "type": "object",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "6e2bc663-5197-441a-957b-bc75e4a2da7c"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "example": "small",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "image": {
+            "type": "string",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "integer",
+            "example": 200000
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "createdby": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "7f1e8ec2-e47a-4053-b845-85c8ca895ab0"
+              },
+              "name": {
+                "type": "string",
+                "example": "Agus Lapar Buk"
+              },
+              "email": {
+                "type": "string",
+                "example": "admin1@email.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "adminx11"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "089799999999"
+              },
+              "address": {
+                "type": "string",
+                "example": "Gunungpati, Semarang"
+              },
+              "role": {
+                "type": "string",
+                "example": "ADMIN"
+              },
+              "createAt": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-10-21T14:39:01.962Z"
+              },
+              "updateAt": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-10-21T14:39:01.962Z"
+              }
+            }
+          },
+          "updatedby": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "7f1e8ec2-e47a-4053-b845-85c8ca895ab0"
+              },
+              "name": {
+                "type": "string",
+                "example": "Agus Lapar Buk"
+              },
+              "email": {
+                "type": "string",
+                "example": "admin1@email.com"
+              },
+              "password": {
+                "type": "string",
+                "example": "adminx11"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "example": "089799999999"
+              },
+              "address": {
+                "type": "string",
+                "example": "Gunungpati, Semarang"
+              },
+              "role": {
+                "type": "string",
+                "example": "ADMIN"
+              },
+              "createAt": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-10-21T14:39:01.962Z"
+              },
+              "updateAt": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-10-21T14:39:01.962Z"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "updatedcar"
+        }
+      },
+      "DeletedCar": {
+        "type": "object",
+        "properties": {
+          "carId": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "6e2bc663-5197-441a-957b-bc75e4a2da7c"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ford F150"
+          },
+          "type": {
+            "type": "string",
+            "example": "small",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "image": {
+            "type": "string",
+            "example": "./images/car01.min.jpg"
+          },
+          "capacity": {
+            "type": "integer",
+            "example": 2
+          },
+          "rentPerDay": {
+            "type": "integer",
+            "example": 200000
+          },
+          "availableAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-03-23T15:49:05.563Z"
+          },
+          "createdby": {
+            "type": "string",
+            "example": "7f1e8ec2-e47a-4053-b845-85c8ca895ab0"
+          },
+          "updatedby": {
+            "type": "string",
+            "example": "7f1e8ec2-e47a-4053-b845-85c8ca895ab0"
+          },
+          "deletedby": {
+            "type": "string",
+            "example": "7f1e8ec2-e47a-4053-b845-85c8ca895ab0"
+          }
+        }
+      },
+      "Credential": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "aguslaparbuk@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "aguslapar12"
+          }
+        }
+      },
+      "LoginSuccess": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "57432cb6-fb08-4c96-a016-ccff975eeafb"
+          },
+          "name": {
+            "type": "string",
+            "example": "Agus Lapar Buk"
+          },
+          "email": {
+            "type": "string",
+            "example": "agus@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "aguslapar123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "085912345678"
+          },
+          "address": {
+            "type": "string",
+            "example": "Gunungpati, Semarang"
+          },
+          "role": {
+            "type": "string",
+            "example": "MEMBER"
+          },
+          "createAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          },
+          "updateAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdmMWU4ZWMyLWU0N2EtNDA1My1iODQ1LTg1YzhjYTg5NWFiMCIsImlhdCI6MTY5ODA4MjAwOX0.FjEScdPxKhKD2c9EykfSloE0DCZQHqX-LtR_tCDHGl8"
+          }
+        }
+      },
+      "MissingCredential": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Please input email and password"
+          }
+        }
+      },
+      "InvalidCredential": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Email or Password is invalid"
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error"
+          }
+        },
+        "xml": {
+          "name": "server error"
+        }
+      },
+      "InputUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Agus Lapar Buk"
+          },
+          "email": {
+            "type": "string",
+            "example": "agus@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "aguslapar123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "085912345678"
+          },
+          "address": {
+            "type": "string",
+            "example": "Gunungpati, Semarang"
+          }
+        }
+      },
+      "UserAdmin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "57432cb6-fb08-4c96-a016-ccff975eeafb"
+          },
+          "name": {
+            "type": "string",
+            "example": "Agus Lapar Buk"
+          },
+          "email": {
+            "type": "string",
+            "example": "admin1@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "adminx11"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "089799999999"
+          },
+          "address": {
+            "type": "string",
+            "example": "Gunungpati, Semarang"
+          },
+          "role": {
+            "type": "string",
+            "example": "ADMIN"
+          },
+          "createAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          },
+          "updateAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          }
+        },
+        "xml": {
+          "name": "userAdmin"
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuidv4",
+            "example": "57432cb6-fb08-4c96-a016-ccff975eeafb"
+          },
+          "name": {
+            "type": "string",
+            "example": "Agus Lapar Buk"
+          },
+          "email": {
+            "type": "string",
+            "example": "agus@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "aguslapar123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "085912345678"
+          },
+          "address": {
+            "type": "string",
+            "example": "Gunungpati, Semarang"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "MEMBER",
+              "ADMIN",
+              "SUPERADMIN"
+            ]
+          },
+          "createAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          },
+          "updateAt": {
+            "type": "string",
+            "format": "date",
+            "example": "2023-10-21T14:39:01.962Z"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "AuthorizationError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Unauthorized"
+          }
+        }
+      },
+      "MissingAuthorizationHeader": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Authorization Header required"
+          }
+        }
+      },
+      "AccessDenied": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Forbidden Access"
+          }
+        }
+      },
+      "NoContent": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Failed"
+          },
+          "message": {
+            "type": "string",
+            "example": "Not Found"
+          }
+        }
+      }
+    }
+  }
+}
