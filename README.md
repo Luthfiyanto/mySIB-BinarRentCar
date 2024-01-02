@@ -1,4 +1,4 @@
-# Challenge 5 : Dokumentasi API
+# Dokumentasi API Binar-RentCar
 
 Tugas ini bertujuan untuk mengimplementasikan design service repository pattern dengan menerapkan fitur authentication dan authorization serta association antara user dengan car. Kemudian hasil dari API yang dibuat didokumentasikan menggunakan Swagger yang bisa diakses melalui endpoint *( 127.0.0.1:8000/api-docs )* setelah menjalankan projek.
 
