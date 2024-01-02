@@ -1,6 +1,8 @@
 const ApplicationError = require("./../../config/errors/ApplicationError");
 const authService = require("./auth");
 const userRepository = require("./../repositories/user");
+const sendEmail = require("./../../config/testmailer");
+const generateOTP = require("./otp");
 
 exports.create = async (payload, isAdmin) => {
   try {
@@ -18,6 +20,16 @@ exports.create = async (payload, isAdmin) => {
       address,
       role: isAdmin ? "ADMIN" : "MEMBER",
     });
+
+    const otp = generateOTP;
+
+    const mailInfo = {
+      to: email,
+      subject: "OTP Verification",
+      html: `<p>Dont send this to anyone: ${otp}</p>`,
+    };
+
+    sendEmail(mailInfo);
     return user;
   } catch (error) {
     throw new ApplicationError(`Failed to add new user ${error.message}`, error.statusCode || 500);
